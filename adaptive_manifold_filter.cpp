@@ -1,10 +1,22 @@
 #include "adaptive_manifold_filter.hpp"
 #include <cmath>
 #include <limits>
-#include <opencv2/core/internal.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 
-using namespace std;
+#include <opencv2/core/core.hpp>
+#if CV_VERSION_MAJOR < 3
+#error opencv 3.x required
+#endif 
+
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/core/utility.hpp>
+#ifndef __OPENCV_BUILD
+#define __OPENCV_BUILD
+#include <opencv2/core/private.hpp>
+#undef __OPENCV_BUILD
+#endif
+
+using std::numeric_limits;
 using namespace cv;
 
 namespace
@@ -802,7 +814,8 @@ namespace
 
         // Save min distance to later perform adjustment of outliers -- Eq. (10)
 
-        min(min_pixel_dist_to_manifold_squared_, buf_.pixel_dist_to_manifold_squared, min_pixel_dist_to_manifold_squared_);
+        //cv::min(min_pixel_dist_to_manifold_squared_, buf_.pixel_dist_to_manifold_squared, min_pixel_dist_to_manifold_squared_);
+        cv::min(_InputArray(min_pixel_dist_to_manifold_squared_), _InputArray(buf_.pixel_dist_to_manifold_squared), _OutputArray(min_pixel_dist_to_manifold_squared_));
 
         // Blurring: perform filtering over the current manifold eta_k
 
@@ -883,5 +896,5 @@ namespace
 
 Ptr<AdaptiveManifoldFilter> cv::AdaptiveManifoldFilter::create()
 {
-    return new AdaptiveManifoldFilterImpl;
+    return Ptr<AdaptiveManifoldFilter>(new AdaptiveManifoldFilterImpl);
 }

@@ -3,7 +3,7 @@
 #ifndef __ADAPTIVE_MANIFOLD_FILTER_HPP__
 #define __ADAPTIVE_MANIFOLD_FILTER_HPP__
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core.hpp>
 
 namespace cv
 {
